@@ -1,0 +1,31 @@
+import cv2
+import numpy as np
+
+# Read the binary image (where objects are white and background is black)
+binary_image = cv2.imread('unprocessed_image.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Threshold the image to convert it to binary
+_, binary_image = cv2.threshold(binary_image, 127, 255, cv2.THRESH_BINARY)
+
+# Find contours in the binary image
+contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Specify the minimum area threshold
+min_area_threshold = 50 # Adjust this value according to your needs
+
+# Create a mask to store the filtered contours
+filtered_mask = np.zeros_like(binary_image)
+
+# Iterate over all contours
+for contour in contours:
+    # Calculate the area of each contour
+    area = cv2.contourArea(contour)
+    # If the area is larger than the threshold, draw the contour on the mask
+    if area >= min_area_threshold:
+        cv2.drawContours(filtered_mask, [contour], 0, 255, -1)
+
+# Display the original binary image and the filtered image
+cv2.imshow('Original Binary Image', binary_image)
+cv2.imshow('Filtered Binary Image', filtered_mask)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

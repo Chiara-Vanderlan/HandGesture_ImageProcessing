@@ -1,0 +1,26 @@
+import cv2
+import numpy as np
+
+# Read the binary image (where objects are white and background is black)
+binary_image = cv2.imread('unprocessed_image.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Threshold the image to convert it to binary
+_, binary_image = cv2.threshold(binary_image, 127, 255, cv2.THRESH_BINARY)
+
+# Invert the binary image (objects become black, background becomes white)
+binary_image = cv2.bitwise_not(binary_image)
+
+# Create a copy of the inverted binary image
+filled_image = binary_image.copy()
+
+# Fill the holes using morphological closing
+filled_image = cv2.morphologyEx(filled_image, cv2.MORPH_CLOSE, np.ones((5,5), np.uint8))
+
+# Invert the filled image back to the original orientation
+filled_image = cv2.bitwise_not(filled_image)
+
+# Display the original binary image and the filled image
+cv2.imshow('Binary Image', binary_image)
+cv2.imshow('Filled Image', filled_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

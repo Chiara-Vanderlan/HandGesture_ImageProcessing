@@ -1,0 +1,32 @@
+import cv2
+import numpy as np
+
+# Read the segmented image
+segmented_image = cv2.imread('Segmented Image.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Define the structuring element (kernel)
+kernel = np.ones((5, 5), np.uint8)
+
+# Perform morphological operations (erosion and dilation)
+# Erosion removes small white noises, while dilation increases the object area
+eroded_image = cv2.erode(segmented_image, kernel, iterations=1)
+dilated_image = cv2.dilate(segmented_image, kernel, iterations=1)
+
+# Perform opening and closing operations
+# Opening = erosion followed by dilation, useful for removing noise
+# Closing = dilation followed by erosion, useful for closing small holes
+opened_image = cv2.morphologyEx(segmented_image, cv2.MORPH_OPEN, kernel)
+closed_image = cv2.morphologyEx(segmented_image, cv2.MORPH_CLOSE, kernel)
+
+# Display the original segmented image and morphologically processed images
+cv2.imshow('Segmented Image', segmented_image)
+cv2.imshow('Eroded Image', eroded_image)
+cv2.imshow('Dilated Image', dilated_image)
+cv2.imshow('Opened Image', opened_image)
+cv2.imshow('Closed Image', closed_image)
+
+more_dilated_image = cv2.dilate(closed_image, kernel, iterations=1)
+cv2.imshow('more dialated Image', more_dilated_image)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
